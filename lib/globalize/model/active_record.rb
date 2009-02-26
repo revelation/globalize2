@@ -8,8 +8,8 @@ module Globalize
     module ActiveRecord
       class << self                
         def create_proxy_class(klass)
-          Object.const_set "#{klass.table_name}Translation", Class.new(::ActiveRecord::Base){
-            belongs_to "#{klass.table_name.underscore}".intern
+          Object.const_set "#{klass.name.split('::').first}Translation", Class.new(::ActiveRecord::Base){
+            belongs_to "#{klass.name.split('::').first.underscore}".intern
             
             def locale
               read_attribute(:locale).to_sym
