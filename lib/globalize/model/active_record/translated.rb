@@ -26,7 +26,9 @@ module Globalize
               alias_method_chain :reload, :globalize
               
               self.globalize_proxy = Globalize::Model::ActiveRecord.create_proxy_class(self)
-              has_many :globalize_translations, :class_name => globalize_proxy.name, :extend => Extensions
+              puts "PROXY NAME: #{self.globalize_proxy}"
+              has_many :globalize_translations, :class_name => globalize_proxy.name, :foreign_key => "#{self.table_name.singularize}_id", :extend => Extensions
+              # has_many :globalize_translations, :class_name => FieldTranslations, :foreign_key => 'field_id' :extend => Extensions
 
               after_save :update_globalize_record              
             end
@@ -85,7 +87,7 @@ module Globalize
                 raise BadMigrationFieldType, "Bad field type for #{name}, should be :string or :text"
               end 
             end
-            translation_table_name = self.name.underscore + '_translations'
+            translation_table_name = self.table_name.singularize.underscore + '_translations'
             self.connection.create_table(translation_table_name) do |t|
               t.references self.table_name.singularize
               t.string :locale
@@ -97,14 +99,15 @@ module Globalize
           end
 
           def drop_translation_table!
-            translation_table_name = self.name.underscore + '_translations'
+            translation_table_name = self.table_name.singularize.underscore + '_translations'
             self.connection.drop_table translation_table_name
           end
           
           private
           
           def i18n_attr(attribute_name)
-            self.base_class.name.underscore + "_translations.#{attribute_name}"
+            puts self.base_class
+            self.base_class.table_name.singularize.underscore + "_translations.#{attribute_name}"
           end          
         end
         
