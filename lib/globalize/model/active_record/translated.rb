@@ -106,7 +106,7 @@ module Globalize
           private
           
           def i18n_attr(attribute_name)
-            puts self.base_class
+            # puts self.base_class
             self.base_class.table_name.singularize.underscore + "_translations.#{attribute_name}"
           end          
         end
