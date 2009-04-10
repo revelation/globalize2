@@ -30,6 +30,19 @@ module Globalize
               globalize.stash self.class.locale, attr_name, val
               self[attr_name] = val
             }
+            klass.send :define_method, "all_#{attr_name}", lambda {
+              translated_locales.inject({}) do |h,v| 
+                h[v]=(globalize.fetch v, attr_name);h
+              end
+            }
+            klass.send :define_method, "#{attr_name}_for_locale", lambda { |loc|
+              globalize.fetch loc, attr_name
+            }
+            klass.send :define_method, "set_#{attr_name}_for_locale", lambda { |loc, val|
+              globalize.stash loc, attr_name, val
+              self[attr_name] = val
+            }
+            
           end
         end
       end
