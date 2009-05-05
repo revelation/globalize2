@@ -354,6 +354,16 @@ class TranslatedTest < ActiveSupport::TestCase
     with_include  = Post.tranlsations_included.map {|x| [x.subject, x.content]}
     assert_equal default, with_include
   end
+
+  test "attribute translated before type cast" do
+    Post.locale = :en
+    post = Post.create :subject => 'foo', :content => 'bar'
+    Post.locale = :de
+    post.update_attribute :subject, "German foo"
+    assert_equal 'German foo', post.subject_before_type_cast
+    Post.locale = :en
+    assert_equal 'foo', post.subject_before_type_cast
+  end
 end
 
 # TODO should validate_presence_of take fallbacks into account? maybe we need
