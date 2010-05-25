@@ -26,7 +26,6 @@ module Globalize
               alias_method_chain :reload, :globalize
               
               self.globalize_proxy = Globalize::Model::ActiveRecord.create_proxy_class(self)
-              puts "PROXY NAME: #{self.globalize_proxy}"
               has_many :globalize_translations, :class_name => globalize_proxy.name, :foreign_key => "#{self.table_name.singularize}_id", :extend => Extensions
               # has_many :globalize_translations, :class_name => FieldTranslations, :foreign_key => 'field_id' :extend => Extensions
 
